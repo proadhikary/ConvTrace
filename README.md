@@ -62,7 +62,3 @@
 3. Upload a CSV file on the index page to display the chat conversation.
 4. Save summaries by entering the summary and selecting the summary type.
 5. Download the CSV.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
