@@ -10,6 +10,7 @@
     <style>
         .mx-8 {
             margin-left: 20rem !important;
+        }
     </style>
 </head>
 
@@ -37,42 +38,72 @@
             <div class="card-body">
                 {% if chat_data %}
                 {% for row in chat_data %}
+                {% if loop.last %}
+                {# Skip rendering the last line #}
+                {% else %}
                 <div class="{% if row.Type == 'T' %} mx-8{% endif %} mb-2">
                     <div class="{% if row.Type == 'T' %}bg-info text-white{% else %}bg-light {% endif %} p-2 rounded">
-                        {%if row.Type == 'T' %}<b>Therapist:</b> {% else %}<b>Patient:</b> {% endif %}{{ row.Utterance
-                        }}
+                        {% if row['Sub topic'] %}
+                        <small><em>Sub Topic: {{ row['Sub topic'] }}</em></small><br>
+                        {% endif %}
+                        {% if row.Type == 'T' %}
+                        <b>Therapist:</b>
+                        {% else %}
+                        <b>Patient:</b>
+                        {% endif %}
+                        {{ row.Utterance }}
                     </div>
                 </div>
+                {% endif %}
                 {% endfor %}
                 {% else %}
                 No chat data available.
                 {% endif %}
             </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    {% for row in chat_data %}
+                    {% if loop.index == (chat_data|length - 0) %}
+                    <center>
+                        <h3> <b>Summary</b></h3>
+                        <p>{{ row['Sub topic'] }}</p>
+                    </center>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+
+
+
+
         </div>
+
 
         <hr>
 
         <h2>Save Summary</h2>
-        <form method="get" action="/getCSV">
-            <button type="submit" class="btn btn-success btn btn-success float-right">Download File</button>
-        </form>
-        <br>
         <form method="post" action="/save_summary">
             <div class="form-group">
-                <label for="summary_type">Summary Type:</label>
-                <select name="summary_type" class="form-control" required>
-                    <option value="summary_sh">Symptom and History</option>
-                    <option value="summary_pd">Patient Discovery</option>
-                    <option value="summary_rt">Reflecting and Append</option>
-                </select>
+                <label for="summary_sh">Symptom and History:</label>
+                <textarea name="summary_sh" class="form-control" rows="3" required></textarea>
             </div>
+
             <div class="form-group">
-                <label for="summary">Summary:</label>
-                <textarea name="summary" class="form-control" rows="3" required></textarea>
+                <label for="summary_pd">Patient Discovery:</label>
+                <textarea name="summary_pd" class="form-control" rows="3" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="summary_rt">Reflecting:</label>
+                <textarea name="summary_rt" class="form-control" rows="3" required></textarea>
             </div>
 
             <button type="submit" class="btn btn-success">Save Summary</button>
         </form>
+
+
 
 
     </div>
@@ -80,10 +111,11 @@
 
     <footer class="bg-body-tertiary text-center text-lg-start">
         <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
-            © 2024 | 
+            © 2024 |
             <a class="text-body" href="https://lcs2.in/">LCS2, IIT Delhi</a>
         </div>
     </footer>
+
 </body>
 
 </html>
